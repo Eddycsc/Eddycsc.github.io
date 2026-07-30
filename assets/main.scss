@@ -118,3 +118,92 @@ a:hover {
 .svg-icon {
   fill: var(--color-text-muted);
 }
+
+/* ===== 期貨選擇權分區 ===== */
+
+.futures-hero {
+  padding: 2rem 0 1rem;
+  text-align: center;
+}
+.futures-hero h1 {
+  font-weight: 800;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+.futures-hero-subtitle {
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+}
+
+.futures-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.futures-card {
+  display: block;
+  background-color: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.futures-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(46, 36, 25, 0.08);
+  text-decoration: none;
+}
+.futures-card-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+.futures-card-body h3 {
+  color: var(--color-text);
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+}
+.futures-card-body p {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.futures-about {
+  border-top: 1px solid var(--color-border);
+  padding-top: 2rem;
+  margin-top: 2rem;
+}
+.futures-about h2 {
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+.futures-about-block {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.futures-about-icon {
+  font-size: 1.5rem;
+  flex: 0 0 auto;
+}
+.futures-about-block h3 {
+  color: var(--color-accent);
+  font-weight: 700;
+  margin: 0 0 0.3rem;
+}
+.futures-about-block p {
+  color: var(--color-text);
+  margin: 0;
+}
+
+.futures-disclaimer {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: var(--color-bg-alt);
+  border-radius: 8px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}

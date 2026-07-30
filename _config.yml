@@ -13,6 +13,7 @@ plugins:
 minima:
   skin: classic
   nav_pages:
+    - futures-options/index.md
     - about.md
   social_links:
     github: Eddycsc

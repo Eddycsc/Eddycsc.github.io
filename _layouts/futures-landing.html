@@ -1,0 +1,42 @@
+---
+layout: default
+---
+<div class="futures-hero">
+  <h1>{{ page.title }}</h1>
+  {% if page.subtitle %}<p class="futures-hero-subtitle">{{ page.subtitle }}</p>{% endif %}
+</div>
+
+{% if page.cards %}
+<div class="futures-card-grid">
+  {% for card in page.cards %}
+  <a class="futures-card" href="{{ card.url | relative_url }}">
+    <div class="futures-card-icon">{{ card.icon }}</div>
+    <div class="futures-card-body">
+      <h3>{{ card.title }}</h3>
+      <p>{{ card.description }}</p>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{{ content }}
+
+{% if page.about_blocks %}
+<div class="futures-about">
+  {% if page.about_title %}<h2>{{ page.about_title }}</h2>{% endif %}
+  {% for block in page.about_blocks %}
+  <div class="futures-about-block">
+    <div class="futures-about-icon">{{ block.icon }}</div>
+    <div>
+      <h3>{{ block.heading }}</h3>
+      <p>{{ block.text }}</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if page.disclaimer %}
+<p class="futures-disclaimer">{{ page.disclaimer }}</p>
+{% endif %}
