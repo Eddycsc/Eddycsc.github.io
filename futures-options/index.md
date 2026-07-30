@@ -24,6 +24,10 @@ cards:
     title: 三大法人未平倉部位
     description: 自營商、投信、外資在台指相關期貨的未平倉與淨部位
     url: /futures-options/institutional-positions/
+  - icon: "🎯"
+    title: 台指選擇權籌碼分析
+    description: 週選、週五選、月選的支撐壓力，以及三大法人合計契約市值
+    url: /futures-options/txo-chips/
 about_title: 關於這個分區
 about_blocks:
   - icon: "🎯"
