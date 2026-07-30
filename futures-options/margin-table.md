@@ -4,7 +4,7 @@ title: 保證金基準表
 permalink: /futures-options/margin-table/
 ---
 
-臺灣期貨交易所會依市場波動狀況，不定期調整結算保證金、維持保證金與原始保證金的金額。下表為股價指數類商品的最新公告數字。
+臺灣期貨交易所會依市場波動狀況，不定期調整結算保證金、維持保證金與原始保證金的金額。下表為股價指數類商品的最新公告數字，**由每日自動更新程序同步**。
 
 保證金概念說明可參考 [期貨入門](/futures-options/futures-basics/) 與 [選擇權入門](/futures-options/options-basics/)。
 

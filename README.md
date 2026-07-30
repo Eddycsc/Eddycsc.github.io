@@ -30,3 +30,13 @@ bundle exec jekyll serve
 ```
 
 然後開啟 http://localhost:4000
+
+## 期交所資料自動更新
+
+`futures-options/margin-table.md`、`futures-options/institutional-positions.md`、`futures-options/txo-chips.md` 三頁由 `.github/workflows/update-taifex.yml` 排程，每個交易日 17:00（台北時間）自動執行 `scripts/taifex_daily_update.py`：抓取臺灣期交所公開報表、重新計算、覆寫這三個檔案，並自動 commit + push。若當天沒有新的交易日資料（例如假日），腳本會自動略過、不產生變更。
+
+`scripts/state/taifex_snapshot.json` 存放前一個交易日的原始資料，用來計算日增減，請勿手動刪除。若要立即手動觸發一次更新，可以在 GitHub 上對這個 repo 執行 Actions → Update TAIFEX data → Run workflow，或本機執行：
+
+```
+python scripts/taifex_daily_update.py
+```

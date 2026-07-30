@@ -26,3 +26,6 @@ author:
 markdown: kramdown
 kramdown:
   input: GFM
+
+exclude:
+  - scripts
