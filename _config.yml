@@ -11,7 +11,7 @@ plugins:
   - jekyll-sitemap
 
 minima:
-  skin: auto
+  skin: classic
   nav_pages:
     - about.md
   social_links:
