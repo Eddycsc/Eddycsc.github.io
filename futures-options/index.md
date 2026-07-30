@@ -20,6 +20,10 @@ cards:
     title: 保證金基準表
     description: 期交所公告的股價指數類商品保證金一覽表
     url: /futures-options/margin-table/
+  - icon: "🏦"
+    title: 三大法人未平倉部位
+    description: 自營商、投信、外資在台指相關期貨的未平倉與淨部位
+    url: /futures-options/institutional-positions/
 about_title: 關於這個分區
 about_blocks:
   - icon: "🎯"
