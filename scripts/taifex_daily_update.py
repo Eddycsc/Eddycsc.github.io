@@ -307,12 +307,11 @@ def render_txo_chips(date: str, prev_date: str, chain: dict, opt3: dict, fut: di
 
     sr_all = sr_rows("週五選", "週五選") + sr_rows("週選", "週選") + sr_rows("月選", "月選")
 
-    def opt3_rows():
+    def opt3_table(cp):
         lines = []
-        for cp, cp_zh in [("Call", "買權（Call）"), ("Put", "賣權（Put）")]:
-            for who in ["dealer", "trust", "foreign"]:
-                v = opt3[cp][who]
-                lines.append(f"| {cp_zh} | {WHO_ZH[who]} | {fmt(v['oi_buy_lots'])} | {fmt(v['oi_sell_lots'])} | {v['oi_net_lots']:+,} |")
+        for who in ["dealer", "trust", "foreign"]:
+            v = opt3[cp][who]
+            lines.append(f"| {WHO_ZH[who]} | {fmt(v['oi_buy_lots'])} | {fmt(v['oi_sell_lots'])} | {v['oi_net_lots']:+,} |")
         return "\n".join(lines)
 
     def gross(who, f, o):
@@ -381,9 +380,17 @@ permalink: /futures-options/txo-chips/
 
 臺灣期貨交易所公告的三大法人資訊，只細分到「臺指選擇權整體的買權／賣權」，**沒有按週選／週五選／月選個別契約公布三大法人身份別**，所以下表是所有到期序列合計的數字，無法拆解到單一契約。
 
-| 權別 | 身份別 | 未平倉買方（口） | 未平倉賣方（口） | 淨部位（口） |
-|---|---|---:|---:|---:|
-{opt3_rows()}
+**買權（Call）**
+
+| 身份別 | 未平倉買方（口） | 未平倉賣方（口） | 淨部位（口） |
+|---|---:|---:|---:|
+{opt3_table('Call')}
+
+**賣權（Put）**
+
+| 身份別 | 未平倉買方（口） | 未平倉賣方（口） | 淨部位（口） |
+|---|---:|---:|---:|
+{opt3_table('Put')}
 
 <p class="data-source-note">資料來源：<a href="https://www.taifex.com.tw/cht/3/callsAndPutsDate" target="_blank" rel="noopener noreferrer">臺灣期貨交易所－三大法人-選擇權買賣權分計</a></p>
 
