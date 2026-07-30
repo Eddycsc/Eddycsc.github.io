@@ -24,3 +24,5 @@ author:
   name: Eddy
 
 markdown: kramdown
+kramdown:
+  input: GFM

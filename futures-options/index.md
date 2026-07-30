@@ -16,6 +16,10 @@ cards:
     title: 常見名詞
     description: 期貨與選擇權交易常見詞彙快速查詢
     url: /futures-options/glossary/
+  - icon: "💰"
+    title: 保證金基準表
+    description: 期交所公告的股價指數類商品保證金一覽表
+    url: /futures-options/margin-table/
 about_title: 關於這個分區
 about_blocks:
   - icon: "🎯"
@@ -25,7 +29,7 @@ about_blocks:
     heading: 內容原則
     text: 這裡的內容以教育性質的基礎觀念整理為主，不提供個別商品的買賣建議，也不代表任何投資建議或保證獲利的說法。
   - icon: "🔍"
-    heading: 持續更新
-    text: 內容會參考公開的交易所規則與市場慣例陸續整理、修訂，如果發現內容有誤或想討論，歡迎透過首頁的聯絡方式告訴我。
+    heading: 資料來源
+    text: 商品規格與保證金數字直接整理自臺灣期貨交易所（TAIFEX）官方公告，每篇文章下方都會附上原始連結與資料更新日期；保證金會隨市場波動不定期調整，實際交易請以期交所最新公告為準。
 disclaimer: 以上內容僅為教育性質整理，不構成投資建議。期貨與選擇權交易具有高風險，操作前請詳閱商品規則並評估自身風險承受度。
 ---

@@ -105,6 +105,33 @@ a:hover {
   color: var(--color-text);
 }
 
+.post-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.92rem;
+}
+.post-content table th,
+.post-content table td {
+  border: 1px solid var(--color-border);
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+}
+.post-content table th {
+  background-color: var(--color-bg-alt);
+  color: var(--color-text);
+  font-weight: 700;
+}
+.post-content table td {
+  color: var(--color-text);
+}
+
+.data-source-note {
+  margin-top: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
 .site-footer {
   border-top: 1px solid var(--color-border);
   background-color: var(--color-bg);
