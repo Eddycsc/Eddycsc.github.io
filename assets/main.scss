@@ -24,6 +24,8 @@ body {
   color: var(--color-text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
   line-height: 1.75;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .wrapper {
@@ -47,10 +49,18 @@ a:hover {
 
 .site-title,
 .site-title:visited {
-  color: var(--color-text) !important;
+  color: var(--color-bg) !important;
+  background-color: var(--color-accent);
   font-weight: 800;
-  font-size: 1.5rem;
+  font-size: 1.15rem;
   letter-spacing: -0.02em;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  transition: background-color 150ms ease;
+}
+.site-title:hover {
+  background-color: var(--color-accent-dark);
+  text-decoration: none;
 }
 
 .site-nav .page-link {

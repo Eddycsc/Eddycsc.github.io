@@ -18,6 +18,8 @@ header_pages:
   - futures-options/margin-table.md
   - futures-options/institutional-positions.md
   - futures-options/txo-chips.md
+  - futures-options/global-indices.md
+  - futures-options/twse-data.md
   - about.md
 
 minima:

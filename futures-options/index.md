@@ -16,6 +16,8 @@ permalink: /futures-options/
 | [保證金基準表](/futures-options/margin-table/) | 期交所公告的股價指數類商品保證金一覽表 |
 | [三大法人未平倉部位](/futures-options/institutional-positions/) | 自營商、投信、外資在台指相關期貨的未平倉與淨部位 |
 | [台指選擇權籌碼分析](/futures-options/txo-chips/) | 週選、週五選、月選的支撐壓力，以及三大法人合計契約市值 |
+| [相關指數速覽](/futures-options/global-indices/) | 台指期、加權指數與主要國際指數、商品期貨的收盤價與漲跌 |
+| [證交所數據](/futures-options/twse-data/) | 股票市場三大法人買賣超、融資餘額變化 |
 
 ## 關於這個分區
 
