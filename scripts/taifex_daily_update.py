@@ -205,7 +205,59 @@ permalink: /futures-options/margin-table/
 """
 
 
-def render_institutional_positions(date: str, fut: dict) -> str:
+def gross_value(who: str, f: dict, o: dict) -> int:
+    total = 0
+    for prod in ["TXF", "MXF", "TMF"]:
+        v = f[prod][who]
+        total += v["oi_buy_amt"] + v["oi_sell_amt"]
+    for cp in ["Call", "Put"]:
+        v = o[cp][who]
+        total += v["oi_buy_amt"] + v["oi_sell_amt"]
+    return total
+
+
+def detail_value(who: str, f: dict, o: dict) -> dict:
+    d = {}
+    for prod in ["TXF", "MXF", "TMF"]:
+        v = f[prod][who]
+        d[prod] = v["oi_buy_amt"] + v["oi_sell_amt"]
+    for cp in ["Call", "Put"]:
+        v = o[cp][who]
+        d[cp] = v["oi_buy_amt"] + v["oi_sell_amt"]
+    return d
+
+
+def render_value_section(date: str, prev_date: str, fut: dict, opt3: dict, prev_fut: dict, prev_opt: dict) -> str:
+    value_rows = []
+    detail_rows = []
+    for who in ["dealer", "trust", "foreign"]:
+        today_v = gross_value(who, fut, opt3)
+        prev_v = gross_value(who, prev_fut, prev_opt)
+        change = today_v - prev_v
+        value_rows.append(
+            f"| {WHO_ZH[who]} | {fmt(today_v)}（約{today_v/100000:,.0f}億） | {fmt(prev_v)}（約{prev_v/100000:,.0f}億） | **{change:+,}（約{change/100000:+,.0f}億）** |"
+        )
+        d = detail_value(who, fut, opt3)
+        detail_rows.append(f"| {WHO_ZH[who]} | {fmt(d['TXF'])} | {fmt(d['MXF'])} | {fmt(d['TMF'])} | {fmt(d['Call'])} | {fmt(d['Put'])} |")
+
+    return f"""把台指期貨系列（臺股期貨 TXF、小型臺指 MXF、微型臺指 TMF）與臺指選擇權（TXO 買權＋賣權）的未平倉契約金額全部加總，可以得到每個法人目前在「台指全系列商品」上總共持有多少市值部位——**契約市值的計算一定要把選擇權併入，只算期貨會低估實際部位規模**。這裡採計「持有部位市值」＝多方契約金額＋空方契約金額（即不論多空方向，全部未平倉部位的市值加總）。
+
+單位：新臺幣千元
+
+| 法人 | {date} 市值 | {prev_date} 市值 | 較昨日增減 |
+|---|---:|---:|---:|
+{chr(10).join(value_rows)}
+
+<p class="data-source-note">計算方式：分別加總 TXF／MXF／TMF／TXO買權／TXO賣權 五項商品的「未平倉買方契約金額＋未平倉賣方契約金額」；原始數字取自臺灣期貨交易所三大法人期貨與選擇權每日公告</p>
+
+### 各商品市值明細（千元，多方＋空方合計）
+
+| 法人 | TXF | MXF | TMF | TXO買權 | TXO賣權 |
+|---|---:|---:|---:|---:|---:|
+{chr(10).join(detail_rows)}"""
+
+
+def render_institutional_positions(date: str, prev_date: str, fut: dict, opt3: dict, prev_fut: dict, prev_opt: dict) -> str:
     def rows(prod):
         lines = []
         for who in ["dealer", "trust", "foreign"]:
@@ -261,11 +313,18 @@ permalink: /futures-options/institutional-positions/
 合計等值淨部位 = 臺股期貨淨部位 + 小型臺指淨部位 × 0.25 + 微型臺指淨部位 × 0.05
 ```
 
+## 三大法人合計契約市值（含台指選擇權）
+
+{render_value_section(date, prev_date, fut, opt3, prev_fut, prev_opt)}
+
+想看更細的台指選擇權籌碼（週選/週五選/月選支撐壓力、三大法人買權賣權未平倉），可以參考 [台指選擇權籌碼分析](/futures-options/txo-chips/)。
+
 ## 使用上的提醒
 
 - 這份資料**每日自動抓取臺灣期交所最新公告並更新**，資料日期以上方標示為準；期交所每個交易日收盤後公告新的數字
 - 三大法人的未平倉，是眾多法人機構的加總結果，不代表單一機構的交易策略，也不能簡單解讀成「多空訊號」
 - 投信在台指期貨系列常有大量淨多部位，主要是因為部分槓桿型 ETF（例如 2 倍做多台股 ETF）需要用期貨複製曝險，屬於被動避險性質的部位，不一定代表投信主動看多後市
+- 契約市值的加總是把期貨和選擇權的名目市值直接相加，兩者的風險屬性不同，解讀時請留意這個差異
 
 <p class="futures-disclaimer">以上內容為期交所公開資料的整理與換算，不構成投資建議。期貨與選擇權交易具有高風險，操作前請詳閱商品規則並評估自身風險承受度。</p>
 """
@@ -313,38 +372,6 @@ def render_txo_chips(date: str, prev_date: str, chain: dict, opt3: dict, fut: di
             v = opt3[cp][who]
             lines.append(f"| {WHO_ZH[who]} | {fmt(v['oi_buy_lots'])} | {fmt(v['oi_sell_lots'])} | {v['oi_net_lots']:+,} |")
         return "\n".join(lines)
-
-    def gross(who, f, o):
-        total = 0
-        for prod in ["TXF", "MXF", "TMF"]:
-            v = f[prod][who]
-            total += v["oi_buy_amt"] + v["oi_sell_amt"]
-        for cp in ["Call", "Put"]:
-            v = o[cp][who]
-            total += v["oi_buy_amt"] + v["oi_sell_amt"]
-        return total
-
-    def detail(who, f, o):
-        d = {}
-        for prod in ["TXF", "MXF", "TMF"]:
-            v = f[prod][who]
-            d[prod] = v["oi_buy_amt"] + v["oi_sell_amt"]
-        for cp in ["Call", "Put"]:
-            v = o[cp][who]
-            d[cp] = v["oi_buy_amt"] + v["oi_sell_amt"]
-        return d
-
-    value_rows = []
-    detail_rows = []
-    for who in ["dealer", "trust", "foreign"]:
-        today_v = gross(who, fut, opt3)
-        prev_v = gross(who, prev_fut, prev_opt)
-        change = today_v - prev_v
-        value_rows.append(
-            f"| {WHO_ZH[who]} | {fmt(today_v)}（約{today_v/100000:,.0f}億） | {fmt(prev_v)}（約{prev_v/100000:,.0f}億） | **{change:+,}（約{change/100000:+,.0f}億）** |"
-        )
-        d = detail(who, fut, opt3)
-        detail_rows.append(f"| {WHO_ZH[who]} | {fmt(d['TXF'])} | {fmt(d['MXF'])} | {fmt(d['TMF'])} | {fmt(d['Call'])} | {fmt(d['Put'])} |")
 
     return f"""---
 layout: page
@@ -402,21 +429,7 @@ permalink: /futures-options/txo-chips/
 
 ## 五、三大法人合計契約市值與日增減（含大台、小台、微台）
 
-把台指期貨系列（臺股期貨 TXF、小型臺指 MXF、微型臺指 TMF）與臺指選擇權（TXO 買權＋賣權）的未平倉契約金額全部加總，可以得到每個法人目前在「台指全系列商品」上總共持有多少市值部位。這裡採計「持有部位市值」＝多方契約金額＋空方契約金額（即不論多空方向，全部未平倉部位的市值加總）。
-
-單位：新臺幣千元
-
-| 法人 | {date} 市值 | {prev_date} 市值 | 較昨日增減 |
-|---|---:|---:|---:|
-{chr(10).join(value_rows)}
-
-<p class="data-source-note">計算方式：分別加總 TXF／MXF／TMF／TXO買權／TXO賣權 五項商品的「未平倉買方契約金額＋未平倉賣方契約金額」；原始數字取自臺灣期貨交易所三大法人期貨與選擇權每日公告</p>
-
-### 各商品市值明細（千元，多方＋空方合計）
-
-| 法人 | TXF | MXF | TMF | TXO買權 | TXO賣權 |
-|---|---:|---:|---:|---:|---:|
-{chr(10).join(detail_rows)}
+{render_value_section(date, prev_date, fut, opt3, prev_fut, prev_opt)}
 
 ## 使用上的提醒
 
@@ -458,7 +471,7 @@ def main():
         prev_fut = snapshot["fut"]
         prev_opt = snapshot["opt"]
         (ROOT / "futures-options" / "institutional-positions.md").write_text(
-            render_institutional_positions(today, fut), encoding="utf-8"
+            render_institutional_positions(today, prev_date, fut, opt3, prev_fut, prev_opt), encoding="utf-8"
         )
         (ROOT / "futures-options" / "txo-chips.md").write_text(
             render_txo_chips(today, prev_date, chain, opt3, fut, prev_fut, prev_opt), encoding="utf-8"
