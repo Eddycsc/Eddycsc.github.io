@@ -1,0 +1,25 @@
+title: Eddy的備忘錄
+description: 記錄想法、學習與生活片段
+lang: zh-TW
+timezone: Asia/Taipei
+
+theme: minima
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+minima:
+  skin: auto
+  nav_pages:
+    - about.md
+  social_links:
+    github: Eddycsc
+
+show_excerpts: true
+
+author:
+  name: Eddy
+
+markdown: kramdown
