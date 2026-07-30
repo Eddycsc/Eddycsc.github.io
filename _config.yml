@@ -10,10 +10,26 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
 
+header_pages:
+  - futures-options/index.md
+  - futures-options/futures-basics.md
+  - futures-options/options-basics.md
+  - futures-options/glossary.md
+  - futures-options/margin-table.md
+  - futures-options/institutional-positions.md
+  - futures-options/txo-chips.md
+  - about.md
+
 minima:
   skin: classic
   nav_pages:
     - futures-options/index.md
+    - futures-options/futures-basics.md
+    - futures-options/options-basics.md
+    - futures-options/glossary.md
+    - futures-options/margin-table.md
+    - futures-options/institutional-positions.md
+    - futures-options/txo-chips.md
     - about.md
   social_links:
     github: Eddycsc
