@@ -21,7 +21,7 @@ permalink: /about/
 - **Email**｜[10579@entrust.com.tw](mailto:10579@entrust.com.tw)
 - **下單專線**｜02-2545-0682
 - **出金專線**｜02-2545-0731
-- **客服專線**｜02-412-8889
+- **客服專線**｜02-412-8889（進線後轉8期貨客服）
 
 <p class="data-source-note">華南期貨股份有限公司 台北總公司｜期貨商許可證照字號：112年金管期總字第007號</p>
 
@@ -37,6 +37,8 @@ permalink: /about/
 
 - **台幣**｜華南銀行、中國信託、國泰世華、台新銀行、台灣企銀
 - **外幣**｜華南銀行、中國信託、國泰世華
+
+<p class="data-source-note">以上公司資訊、下單軟體與出入金銀行已對照<a href="https://ft.entrust.com.tw/entrustFutures/index.do" target="_blank" rel="noopener noreferrer">華南期貨官方網站</a>核實，如有出入以官網公告為準。</p>
 
 ## 警語
 
