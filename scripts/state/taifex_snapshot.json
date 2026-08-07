@@ -1,66 +1,66 @@
 {
-  "date": "2026/08/06",
+  "date": "2026/08/07",
   "fut": {
     "TXF": {
       "dealer": {
-        "oi_buy_lots": 7060,
-        "oi_buy_amt": 62566503,
-        "oi_sell_lots": 4458,
-        "oi_sell_amt": 39505760,
-        "oi_net_lots": 2602,
-        "oi_net_amt": 23060743
+        "oi_buy_lots": 7096,
+        "oi_buy_amt": 62977963,
+        "oi_sell_lots": 4584,
+        "oi_sell_amt": 40665358,
+        "oi_net_lots": 2512,
+        "oi_net_amt": 22312605
       },
       "trust": {
-        "oi_buy_lots": 87666,
-        "oi_buy_amt": 775987798,
-        "oi_sell_lots": 3503,
-        "oi_sell_amt": 31007155,
-        "oi_net_lots": 84163,
-        "oi_net_amt": 744980643
+        "oi_buy_lots": 86632,
+        "oi_buy_amt": 767558195,
+        "oi_sell_lots": 3555,
+        "oi_sell_amt": 31495167,
+        "oi_net_lots": 83077,
+        "oi_net_amt": 736063028
       },
       "foreign": {
-        "oi_buy_lots": 8953,
-        "oi_buy_amt": 79285373,
-        "oi_sell_lots": 98336,
-        "oi_sell_amt": 870551296,
-        "oi_net_lots": -89383,
-        "oi_net_amt": -791265923
+        "oi_buy_lots": 8321,
+        "oi_buy_amt": 73785350,
+        "oi_sell_lots": 96232,
+        "oi_sell_amt": 852803933,
+        "oi_net_lots": -87911,
+        "oi_net_amt": -779018583
       }
     },
     "MXF": {
       "dealer": {
-        "oi_buy_lots": 3342,
-        "oi_buy_amt": 7413303,
-        "oi_sell_lots": 7906,
-        "oi_sell_amt": 17545647,
-        "oi_net_lots": -4564,
-        "oi_net_amt": -10132344
+        "oi_buy_lots": 3204,
+        "oi_buy_amt": 7121182,
+        "oi_sell_lots": 9150,
+        "oi_sell_amt": 20326567,
+        "oi_net_lots": -5946,
+        "oi_net_amt": -13205385
       },
       "trust": {
         "oi_buy_lots": 125,
-        "oi_buy_amt": 276632,
+        "oi_buy_amt": 276905,
         "oi_sell_lots": 96,
-        "oi_sell_amt": 212438,
+        "oi_sell_amt": 212626,
         "oi_net_lots": 29,
-        "oi_net_amt": 64194
+        "oi_net_amt": 64279
       },
       "foreign": {
-        "oi_buy_lots": 1287,
-        "oi_buy_amt": 2850265,
-        "oi_sell_lots": 7536,
-        "oi_sell_amt": 16678749,
-        "oi_net_lots": -6249,
-        "oi_net_amt": -13828484
+        "oi_buy_lots": 1494,
+        "oi_buy_amt": 3312100,
+        "oi_sell_lots": 4298,
+        "oi_sell_amt": 9523853,
+        "oi_net_lots": -2804,
+        "oi_net_amt": -6211753
       }
     },
     "TMF": {
       "dealer": {
-        "oi_buy_lots": 4646,
-        "oi_buy_amt": 2064447,
-        "oi_sell_lots": 43215,
-        "oi_sell_amt": 19162375,
-        "oi_net_lots": -38569,
-        "oi_net_amt": -17097928
+        "oi_buy_lots": 4603,
+        "oi_buy_amt": 2049556,
+        "oi_sell_lots": 40043,
+        "oi_sell_amt": 17778706,
+        "oi_net_lots": -35440,
+        "oi_net_amt": -15729150
       },
       "trust": {
         "oi_buy_lots": 0,
@@ -71,66 +71,66 @@
         "oi_net_amt": 0
       },
       "foreign": {
-        "oi_buy_lots": 9948,
-        "oi_buy_amt": 4402786,
-        "oi_sell_lots": 1639,
-        "oi_sell_amt": 725616,
-        "oi_net_lots": 8309,
-        "oi_net_amt": 3677170
+        "oi_buy_lots": 11136,
+        "oi_buy_amt": 4932925,
+        "oi_sell_lots": 1000,
+        "oi_sell_amt": 443347,
+        "oi_net_lots": 10136,
+        "oi_net_amt": 4489578
       }
     }
   },
   "opt": {
     "Call": {
       "dealer": {
-        "oi_buy_lots": 24847,
-        "oi_buy_amt": 1041525,
-        "oi_sell_lots": 22666,
-        "oi_sell_amt": 828929,
-        "oi_net_lots": 2181,
-        "oi_net_amt": 212596
+        "oi_buy_lots": 23471,
+        "oi_buy_amt": 1029481,
+        "oi_sell_lots": 18312,
+        "oi_sell_amt": 755588,
+        "oi_net_lots": 5159,
+        "oi_net_amt": 273893
       },
       "trust": {
         "oi_buy_lots": 5,
-        "oi_buy_amt": 390,
-        "oi_sell_lots": 2830,
-        "oi_sell_amt": 213322,
-        "oi_net_lots": -2825,
-        "oi_net_amt": -212932
+        "oi_buy_amt": 373,
+        "oi_sell_lots": 2790,
+        "oi_sell_amt": 223259,
+        "oi_net_lots": -2785,
+        "oi_net_amt": -222886
       },
       "foreign": {
-        "oi_buy_lots": 9345,
-        "oi_buy_amt": 388416,
-        "oi_sell_lots": 6693,
-        "oi_sell_amt": 445419,
-        "oi_net_lots": 2652,
-        "oi_net_amt": -57003
+        "oi_buy_lots": 8342,
+        "oi_buy_amt": 354866,
+        "oi_sell_lots": 5916,
+        "oi_sell_amt": 429099,
+        "oi_net_lots": 2426,
+        "oi_net_amt": -74233
       }
     },
     "Put": {
       "dealer": {
-        "oi_buy_lots": 27613,
-        "oi_buy_amt": 612751,
-        "oi_sell_lots": 20654,
-        "oi_sell_amt": 458074,
-        "oi_net_lots": 6959,
-        "oi_net_amt": 154677
+        "oi_buy_lots": 24348,
+        "oi_buy_amt": 576052,
+        "oi_sell_lots": 15082,
+        "oi_sell_amt": 422573,
+        "oi_net_lots": 9266,
+        "oi_net_amt": 153479
       },
       "trust": {
-        "oi_buy_lots": 105,
-        "oi_buy_amt": 396,
+        "oi_buy_lots": 5,
+        "oi_buy_amt": 104,
         "oi_sell_lots": 0,
         "oi_sell_amt": 0,
-        "oi_net_lots": 105,
-        "oi_net_amt": 396
+        "oi_net_lots": 5,
+        "oi_net_amt": 104
       },
       "foreign": {
-        "oi_buy_lots": 17399,
-        "oi_buy_amt": 321922,
-        "oi_sell_lots": 13627,
-        "oi_sell_amt": 329513,
-        "oi_net_lots": 3772,
-        "oi_net_amt": -7591
+        "oi_buy_lots": 15094,
+        "oi_buy_amt": 294580,
+        "oi_sell_lots": 12587,
+        "oi_sell_amt": 291200,
+        "oi_net_lots": 2507,
+        "oi_net_amt": 3380
       }
     }
   }
