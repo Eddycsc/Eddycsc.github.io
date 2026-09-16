@@ -8,9 +8,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: market-data-commit
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -21,10 +26,14 @@ jobs:
       - name: Update global indices page
         run: python scripts/global_indices_update.py
 
+      # One source being down must not throw away the page that did update:
+      # both steps run, the job still goes red, and whatever succeeded is committed.
       - name: Update TWSE data page
+        if: ${{ !cancelled() }}
         run: python scripts/twse_daily_update.py
 
       - name: Commit and push if changed
+        if: ${{ !cancelled() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -33,5 +42,6 @@ jobs:
             echo "no changes, skipping commit"
           else
             git commit -m "chore: daily market data update"
-            git push
+            # The TAIFEX job pushes to the same branch; rebase once if it got there first.
+            git push || { git pull --rebase origin master && git push; }
           fi

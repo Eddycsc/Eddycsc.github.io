@@ -4,31 +4,13 @@ Run manually with: python scripts/twse_daily_update.py
 Intended to run daily via .github/workflows/update-market-data.yml
 """
 import datetime
-import json
-import ssl
 import sys
-import urllib.error
-import urllib.request
 from pathlib import Path
 
+from common import DataSourceError, fetch_json, step
+
 ROOT = Path(__file__).resolve().parent.parent
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 TAIPEI = datetime.timezone(datetime.timedelta(hours=8))
-
-
-def _relaxed_ssl_context() -> ssl.SSLContext:
-    # Some TWSE/TPEx cert chains trip urllib's default strict x509 checks
-    # (Missing Subject Key Identifier) even though browsers/curl accept them.
-    # Only relax that one check; keep the rest of certificate verification intact.
-    ctx = ssl.create_default_context()
-    ctx.verify_flags &= ~ssl.VERIFY_X509_STRICT
-    return ctx
-
-
-def fetch_json(url: str) -> dict:
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=30, context=_relaxed_ssl_context()) as resp:
-        return json.loads(resp.read().decode("utf-8"))
 
 
 def today_str() -> str:
@@ -94,7 +76,10 @@ def compute_maintenance_ratio(margin_amt_today_thousand: int) -> dict | None:
     try:
         margn_rows = fetch_json(MI_MARGN_PERSTOCK_URL)
         price_rows = fetch_json(STOCK_DAY_ALL_URL)
-    except urllib.error.URLError as e:
+    except DataSourceError as e:
+        # Optional section only: the OpenAPI host regularly answers with an empty
+        # body or an HTML error page. That must never take down twse-data.md as a
+        # whole - the page already explains the gap when maint is None.
         print(f"WARNING: maintenance ratio fetch failed: {e}", file=sys.stderr)
         return None
 
@@ -255,30 +240,22 @@ permalink: /futures-options/twse-data/
 def main():
     date = today_str()
 
-    try:
-        margn_raw = fetch_json(MI_MARGN_URL.format(date=date))
-    except urllib.error.URLError as e:
-        print(f"ERROR: failed to fetch MI_MARGN: {e}", file=sys.stderr)
-        sys.exit(1)
+    margn_raw = step("fetch MI_MARGN (信用交易統計)", fetch_json, MI_MARGN_URL.format(date=date))
 
     if margn_raw.get("stat") != "OK":
         print(f"no MI_MARGN data for {date} ({margn_raw.get('stat')}), likely a non-trading day; skipping")
         return
 
-    try:
-        bfi_raw = fetch_json(BFI82U_URL.format(date=date))
-    except urllib.error.URLError as e:
-        print(f"ERROR: failed to fetch BFI82U: {e}", file=sys.stderr)
-        sys.exit(1)
+    bfi_raw = step("fetch BFI82U (三大法人買賣金額)", fetch_json, BFI82U_URL.format(date=date))
 
     if bfi_raw.get("stat") != "OK" or bfi_raw.get("date") != date:
         print(f"BFI82U data not yet available for {date} (got stat={bfi_raw.get('stat')!r}, "
               f"date={bfi_raw.get('date')!r}); skipping")
         return
 
-    bfi = parse_bfi82u(bfi_raw)
-    margn = parse_mi_margn(margn_raw)
-    maint = compute_maintenance_ratio(margn["amt_today_thousand"])
+    bfi = step("parse BFI82U", parse_bfi82u, bfi_raw)
+    margn = step("parse MI_MARGN", parse_mi_margn, margn_raw)
+    maint = compute_maintenance_ratio(margn["amt_today_thousand"])  # optional: None is fine
 
     content = render(date, bfi, margn, maint)
     (ROOT / "futures-options" / "twse-data.md").write_text(content, encoding="utf-8")

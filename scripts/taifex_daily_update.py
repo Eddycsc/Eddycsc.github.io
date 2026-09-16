@@ -5,20 +5,19 @@ Intended to run daily via .github/workflows/update-taifex.yml
 """
 import json
 import re
-import urllib.request
 from pathlib import Path
+
+from common import fetch_text, step
 
 ROOT = Path(__file__).resolve().parent.parent
 STATE_PATH = ROOT / "scripts" / "state" / "taifex_snapshot.json"
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+
+MARGIN_URL = "https://www.taifex.com.tw/cht/5/indexMarging"
+FUT_URL = "https://www.taifex.com.tw/cht/3/futContractsDate"
+OPT_URL = "https://www.taifex.com.tw/cht/3/callsAndPutsDate"
+CHAIN_URL = "https://www.taifex.com.tw/cht/3/optDailyMarketReport"
 
 WHO_ZH = {"dealer": "自營商", "trust": "投信", "foreign": "外資及陸資"}
-
-
-def fetch(url: str) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return resp.read().decode("utf-8", errors="ignore")
 
 
 # ---------- generic table-row parsing (shared by futures/options 三大法人 reports) ----------
@@ -444,20 +443,22 @@ permalink: /futures-options/txo-chips/
 # ---------- orchestration ----------
 
 def main():
-    margin_html = fetch("https://www.taifex.com.tw/cht/5/indexMarging")
-    fut_html = fetch("https://www.taifex.com.tw/cht/3/futContractsDate")
-    opt_html = fetch("https://www.taifex.com.tw/cht/3/callsAndPutsDate")
-    chain_html = fetch("https://www.taifex.com.tw/cht/3/optDailyMarketReport")
+    # Each stage is named so a failing daily run says which report broke, on one
+    # line, instead of dumping a traceback that has to be read back to its source.
+    margin_html = step("fetch 保證金一覽表", fetch_text, MARGIN_URL)
+    fut_html = step("fetch 期貨三大法人", fetch_text, FUT_URL)
+    opt_html = step("fetch 選擇權三大法人", fetch_text, OPT_URL)
+    chain_html = step("fetch 選擇權每日行情", fetch_text, CHAIN_URL)
 
-    margin = parse_margin_table(margin_html)
-    fut = parse_three_major_futures(fut_html)
-    opt3 = parse_three_major_options(opt_html)
-    chain = parse_option_chain(chain_html)
-    today = parse_report_date(fut_html)
+    margin = step("parse 保證金一覽表", parse_margin_table, margin_html)
+    fut = step("parse 期貨三大法人", parse_three_major_futures, fut_html)
+    opt3 = step("parse 選擇權三大法人", parse_three_major_options, opt_html)
+    chain = step("parse 選擇權每日行情", parse_option_chain, chain_html)
+    today = step("parse 報表日期", parse_report_date, fut_html)
 
     STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
     if STATE_PATH.exists():
-        snapshot = json.loads(STATE_PATH.read_text(encoding="utf-8"))
+        snapshot = step("read taifex_snapshot.json", json.loads, STATE_PATH.read_text(encoding="utf-8"))
     else:
         snapshot = None
 

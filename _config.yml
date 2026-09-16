@@ -47,3 +47,4 @@ kramdown:
 
 exclude:
   - scripts
+  - CLAUDE.md

@@ -13,40 +13,19 @@ Data is tiered by reliability:
 import datetime
 import json
 import re
-import ssl
 import statistics
 import sys
-import urllib.error
 import urllib.parse
-import urllib.request
 from pathlib import Path
+
+from common import fetch_json, fetch_text, step
 
 ROOT = Path(__file__).resolve().parent.parent
 STATE_PATH = ROOT / "scripts" / "state" / "global_indices_snapshot.json"
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 TAIPEI = datetime.timezone(datetime.timedelta(hours=8))
 
 _TD_RE = re.compile(r"<td[^>]*>(.*?)</td>", re.S | re.I)
 _TAG_RE = re.compile(r"<[^>]+>")
-
-
-def _relaxed_ssl_context() -> ssl.SSLContext:
-    # Some TWSE/TPEx cert chains trip urllib's default strict x509 checks
-    # (Missing Subject Key Identifier) even though browsers/curl accept them.
-    # Only relax that one check; keep the rest of certificate verification intact.
-    ctx = ssl.create_default_context()
-    ctx.verify_flags &= ~ssl.VERIFY_X509_STRICT
-    return ctx
-
-
-def fetch_text(url: str, data: bytes = None) -> str:
-    req = urllib.request.Request(url, data=data, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=30, context=_relaxed_ssl_context()) as resp:
-        return resp.read().decode("utf-8", errors="ignore")
-
-
-def fetch_json(url: str) -> dict:
-    return json.loads(fetch_text(url))
 
 
 def now_taipei() -> datetime.datetime:
@@ -231,7 +210,7 @@ YAHOO_SYMBOLS = [
 
 
 def fetch_yahoo(symbol: str, has_volume: bool, now_ts: float) -> dict:
-    data = fetch_json(YAHOO_CHART_URL.format(symbol=urllib.parse.quote(symbol)))
+    data = fetch_json(YAHOO_CHART_URL.format(symbol=urllib.parse.quote(symbol)), attempts=1)
     result = data["chart"]["result"][0]
     meta = result["meta"]
 
@@ -430,23 +409,17 @@ def main():
     today = now_taipei().date()
     query_date = today.strftime("%Y/%m/%d")
 
-    try:
-        tx = fetch_tx(query_date)
-    except (urllib.error.URLError, TimeoutError) as e:
-        print(f"ERROR: failed to fetch TAIFEX TX data: {e}", file=sys.stderr)
-        sys.exit(1)
+    tx = step("fetch TAIFEX TX daily report", fetch_tx, query_date)
 
     if tx is None:
         print(f"no usable TAIFEX TX settlement data for {query_date} yet "
               f"(non-trading day, or today's session not finalized); skipping")
         return
 
-    try:
-        twse = fetch_twse_indices(today, ["發行量加權股價指數", "電子工業類指數"])
-        otc = fetch_otc_index()
-    except (urllib.error.URLError, TimeoutError, RuntimeError, KeyError) as e:
-        print(f"ERROR: Tier 1 official source failed, skipping page regeneration: {e}", file=sys.stderr)
-        sys.exit(1)
+    # Tier 1: any failure here aborts the page rather than publishing a half-empty one.
+    twse = step("fetch TWSE index report (Tier 1)", fetch_twse_indices, today,
+                ["發行量加權股價指數", "電子工業類指數"])
+    otc = step("fetch TPEx OTC index (Tier 1)", fetch_otc_index)
 
     yahoo = fetch_all_yahoo()  # Tier 2: never raises, degrades per-symbol
 

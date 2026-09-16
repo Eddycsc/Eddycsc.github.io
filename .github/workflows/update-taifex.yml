@@ -8,9 +8,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: taifex-commit
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -30,5 +35,6 @@ jobs:
             echo "no changes, skipping commit"
           else
             git commit -m "chore: daily TAIFEX data update"
-            git push
+            # The market-data job pushes to the same branch; rebase once if it got there first.
+            git push || { git pull --rebase origin master && git push; }
           fi
