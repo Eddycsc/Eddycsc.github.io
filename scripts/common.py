@@ -1,15 +1,13 @@
-"""Shared HTTP plumbing for the daily data scripts.
+"""Shared fetching for the daily data scripts.
 
-Every upstream fetch in scripts/ goes through here so that:
-  * a transient empty/failed response is retried once instead of writing off the run;
-  * any failure surfaces as ONE actionable line (which source, what came back)
-    instead of a stack trace, so a red daily run can be diagnosed from the log alone.
+Every upstream request goes through here so a transient empty response is
+retried once, and so any failure reads as one actionable line - which source,
+what came back - instead of a traceback nobody can act on from the job log.
 """
 import json
 import ssl
 import sys
 import time
-import urllib.error
 import urllib.request
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
@@ -31,30 +29,17 @@ def _relaxed_ssl_context() -> ssl.SSLContext:
     return ctx
 
 
-def _short(text: str, limit: int = 120) -> str:
-    collapsed = " ".join(text.split())
-    return collapsed if len(collapsed) <= limit else collapsed[:limit] + "..."
-
-
 def fetch_text(url: str, data: bytes = None, attempts: int = ATTEMPTS) -> str:
-    """Fetch url (POST when data is given) and return the body.
-
-    Raises DataSourceError - never a bare URLError/timeout - so each caller can
-    decide whether that particular source failing is fatal for its page. Pass
-    attempts=1 for a source that already degrades on its own: retrying a feed
-    whose failure is harmless only makes a bad day slower.
-    """
+    """Fetch url (POST when data is given). Raises DataSourceError, never a bare
+    URLError/timeout, so each caller decides whether that source is fatal for its
+    page. attempts=1 for a source that already degrades on its own."""
     problem = "unknown error"
     for attempt in range(1, attempts + 1):
         req = urllib.request.Request(url, data=data, headers={"User-Agent": UA})
         try:
             with urllib.request.urlopen(req, timeout=TIMEOUT, context=_relaxed_ssl_context()) as resp:
                 body = resp.read().decode("utf-8", errors="ignore")
-        except urllib.error.HTTPError as e:
-            problem = f"HTTP {e.code}"
-            if e.code < 500 and e.code != 429:
-                break  # a 4xx is a permanent answer; retrying only wastes runner time
-        except OSError as e:  # URLError, timeouts, resets - all OSError subclasses
+        except OSError as e:  # URLError, HTTPError and timeouts are all OSError
             problem = f"{type(e).__name__}: {e}"
         else:
             if body.strip():
@@ -70,21 +55,18 @@ def fetch_json(url: str, data: bytes = None, attempts: int = ATTEMPTS):
     try:
         return json.loads(body)
     except ValueError:
-        # These endpoints answer 200 with an HTML error/maintenance page often
-        # enough that it has to be a describable failure, not a JSONDecodeError
-        # traceback from somewhere deep in the call stack.
-        raise DataSourceError(f"{url}: expected JSON, got {_short(body)}") from None
+        # These endpoints answer 200 with an HTML error page often enough that it
+        # has to be a describable failure, not a JSONDecodeError from deep in the stack.
+        head = " ".join(body.split())[:120]
+        raise DataSourceError(f"{url}: expected JSON, got {head}") from None
 
 
 def step(label: str, fn, *args, **kwargs):
-    """Run one stage of a daily job.
-
-    Any failure ends the run with a single 'ERROR: <label>: <cause>' line, which
-    is all of the log anyone needs to read to know which source or parser broke.
-    """
+    """Run one stage of a daily job. Any failure ends the run with a single
+    'ERROR: <label>: <cause>' line - all the log a fix needs."""
     try:
         return fn(*args, **kwargs)
     except DataSourceError as e:
         sys.exit(f"ERROR: {label}: {e}")
-    except (RuntimeError, ValueError, KeyError, IndexError, AttributeError, TypeError) as e:
+    except Exception as e:
         sys.exit(f"ERROR: {label}: {type(e).__name__}: {e}")
